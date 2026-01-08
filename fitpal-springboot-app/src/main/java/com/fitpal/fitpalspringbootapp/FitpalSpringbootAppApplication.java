@@ -1,0 +1,13 @@
+package com.fitpal.fitpalspringbootapp;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class FitpalSpringbootAppApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(FitpalSpringbootAppApplication.class, args);
+    }
+
+}
