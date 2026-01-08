@@ -5,6 +5,7 @@ import com.fitpal.fitpalspringbootapp.dtos.UserIdResponse;
 import com.fitpal.fitpalspringbootapp.services.AuthService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class AuthController {
      * Login endpoint - authenticates user and returns JWT token in cookie
      */
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest,
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest,
                                    HttpServletResponse response) {
         try {
             // TODO: Add validation for login request
