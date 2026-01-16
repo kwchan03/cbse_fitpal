@@ -51,7 +51,7 @@ public class User {
 
     private Integer dailyTargetSteps;
 
-    private Double dailyTargetActivity;
+    private Integer dailyTargetActivity;
 
     private List<FavouriteFood> favouriteFood = new ArrayList<>();
 
