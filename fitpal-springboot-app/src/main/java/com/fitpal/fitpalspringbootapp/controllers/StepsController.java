@@ -9,7 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/steps")
+@RequestMapping("/api/steps")
+@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class StepsController {
 
     @Autowired
