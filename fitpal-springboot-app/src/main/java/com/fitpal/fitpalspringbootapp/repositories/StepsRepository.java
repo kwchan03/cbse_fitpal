@@ -11,4 +11,6 @@ import java.util.List;
 public interface StepsRepository extends MongoRepository<Steps, String> {
     @Query("{ 'userId' : ?0, 'date' : { $gte : ?1, $lte : ?2 } }")
     List<Steps> findByUserIdAndDateBetween(String userId, String startDate, String endDate);
+
+    List<Steps> findByUserId(String userId);
 }

@@ -31,6 +31,12 @@ public class DistanceService {
         return calculateDistance(steps, user.getHeight());
     }
 
+    public double getTotalDistance(String userId) {
+        int steps = stepsService.getTotalSteps(userId);
+        User user = userService.getUserInfo(userId);
+        return calculateDistance(steps, user.getHeight());
+    }
+
     private double calculateDistance(int steps, Double height) {
         if (height == null) {
             throw new IllegalArgumentException("Height is required to calculate distance.");

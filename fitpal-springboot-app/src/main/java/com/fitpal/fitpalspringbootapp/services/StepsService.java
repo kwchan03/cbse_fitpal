@@ -51,4 +51,9 @@ public class StepsService {
         List<Steps> steps = stepsRepository.findByUserIdAndDateBetween(userId, startStr, endStr);
         return steps.stream().mapToInt(Steps::getSteps).sum();
     }
+
+    public int getTotalSteps(String userId) {
+        List<Steps> steps = stepsRepository.findByUserId(userId);
+        return steps.stream().mapToInt(Steps::getSteps).sum();
+    }
 }
