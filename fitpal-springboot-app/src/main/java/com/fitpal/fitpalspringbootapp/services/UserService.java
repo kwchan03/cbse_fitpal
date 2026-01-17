@@ -95,7 +95,7 @@ public class UserService {
         double targetCalorie = Math.ceil(bmr * user.getActivityLevel() + user.getWeightGoal());
         user.setDailyTargetCalorie(targetCalorie);
         user.setDailyTargetSteps(0);
-        user.setDailyTargetActivity(0.0);
+        user.setDailyTargetActivity(0);
 
         return userRepository.save(user);
     }
