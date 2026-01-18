@@ -1,6 +1,5 @@
 package com.fitpal.fitpalspringbootapp.controllers;
 
-import com.fitpal.fitpalspringbootapp.dtos.LogStepsRequest;
 import com.fitpal.fitpalspringbootapp.dtos.LogStepsResponse;
 import com.fitpal.fitpalspringbootapp.models.Steps;
 import com.fitpal.fitpalspringbootapp.services.StepsService;
@@ -8,8 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.Map;
+
 @RestController
-@RequestMapping("/api/steps")
+@RequestMapping("/api/exercises/steps")
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class StepsController {
 
@@ -17,14 +19,24 @@ public class StepsController {
     private StepsService stepsService;
 
     @PostMapping
-    public ResponseEntity<LogStepsResponse> logSteps(@RequestBody LogStepsRequest request) {
-        Steps loggedSteps = stepsService.logSteps(request.getUserId(), request.getDate(), request.getSteps());
+    public ResponseEntity<LogStepsResponse> logSteps(@RequestBody Map<String, Object> request, @RequestAttribute String userId) {
+        Integer steps = (Integer) request.get("steps");
+        LocalDate date = LocalDate.now();
+        Steps loggedSteps = stepsService.logSteps(userId, date.toString(), steps);
         LogStepsResponse response = new LogStepsResponse(
             loggedSteps.getId(),
             loggedSteps.getUserId(),
             loggedSteps.getDate(),
             loggedSteps.getSteps()
         );
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/today")
+    public ResponseEntity<Map<String, Integer>> getTodaySteps(@RequestAttribute String userId) {
+        LocalDate date = LocalDate.now();
+        int steps = stepsService.getDailySteps(userId, date.toString());
+        Map<String, Integer> response = Map.of("steps", steps);
         return ResponseEntity.ok(response);
     }
 
