@@ -26,7 +26,7 @@ public class AuthController {
      */
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest,
-                                   HttpServletResponse response) {
+            HttpServletResponse response) {
         try {
             // TODO: Add validation for login request
             String token = authService.login(
