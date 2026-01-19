@@ -27,6 +27,7 @@ public class ExerciseService {
     private final ExerciseLogRepository exerciseLogRepository;
     private final UserRepository userRepository;
     private final MongoTemplate mongoTemplate;
+    private final StepsService stepsService;
 
     // ---------- helpers ----------
 
@@ -41,7 +42,6 @@ public class ExerciseService {
                     ExerciseLog log = new ExerciseLog();
                     log.setUser(user);
                     log.setDate(date);
-                    log.setSteps(0);
                     log.setWorkout(new ArrayList<>());
                     log.setCardio(new ArrayList<>());
                     return log;
@@ -99,11 +99,6 @@ public class ExerciseService {
         User user = requireUser(userId);
         ExerciseLog log = getOrCreateLog(user, req.getDate());
 
-        // steps
-        if (req.getSteps() != null) {
-            log.setSteps(req.getSteps());
-        }
-
         // workout (append)
         if (req.getWorkout() != null) {
             for (LogExerciseRequest.WorkoutItem w : req.getWorkout()) {
@@ -158,31 +153,6 @@ public class ExerciseService {
         user.setDailyTargetActivity(req.getWorkoutMinutes());
 
         return userRepository.save(user);
-    }
-
-    // ---------- POST /api/exercises/steps ----------
-
-    public ExerciseLog logSteps(String userId, LogStepsRequest req) {
-        if (req.getDate() == null || req.getSteps() == null) {
-            throw new IllegalArgumentException("Invalid request data");
-        }
-
-        User user = requireUser(userId);
-        ExerciseLog log = getOrCreateLog(user, req.getDate());
-
-        log.setSteps(req.getSteps());
-        return exerciseLogRepository.save(log);
-    }
-
-    // ---------- GET /api/exercises/steps/today ----------
-
-    public Map<String, Integer> fetchStepsToday(String userId) {
-        User user = requireUser(userId);
-        LocalDate today = LocalDate.now();
-
-        return exerciseLogRepository.findByUserAndDate(user, today)
-                .map(l -> Map.of("steps", l.getSteps() == null ? 0 : l.getSteps()))
-                .orElse(Map.of("steps", 0));
     }
 
     // ---------- GET /api/exercises/cardio/duration ----------
@@ -260,28 +230,27 @@ public class ExerciseService {
 
         List<ExerciseLog> logs = mongoTemplate.find(q, ExerciseLog.class, "exerciselogs");
 
-        int totalSteps = 0;
+        int totalSteps = stepsService.getWeeklySteps(user.getId(), today.toString());
+
         int totalMinutes = 0;
         int totalCalories = 0;
 
         for (ExerciseLog log : logs) {
-            totalSteps += (log.getSteps() == null ? 0 : log.getSteps());
+                int cardioMinutes = (log.getCardio() == null) ? 0 :
+                        log.getCardio().stream()
+                                .map(ExerciseLog.CardioEntry::getDuration)
+                                .filter(Objects::nonNull)
+                                .mapToInt(Integer::intValue)
+                                .sum();
+                totalMinutes += cardioMinutes;
 
-            int cardioMinutes = (log.getCardio() == null) ? 0 :
-                    log.getCardio().stream()
-                            .map(ExerciseLog.CardioEntry::getDuration)
-                            .filter(Objects::nonNull)
-                            .mapToInt(Integer::intValue)
-                            .sum();
-            totalMinutes += cardioMinutes;
-
-            int dailyCalories = (log.getCardio() == null) ? 0 :
-                    log.getCardio().stream()
-                            .map(ExerciseLog.CardioEntry::getCaloriesBurned)
-                            .filter(Objects::nonNull)
-                            .mapToInt(Integer::intValue)
-                            .sum();
-            totalCalories += dailyCalories;
+                int dailyCalories = (log.getCardio() == null) ? 0 :
+                        log.getCardio().stream()
+                                .map(ExerciseLog.CardioEntry::getCaloriesBurned)
+                                .filter(Objects::nonNull)
+                                .mapToInt(Integer::intValue)
+                                .sum();
+                totalCalories += dailyCalories;
         }
 
         int daysCount = 7;
@@ -291,7 +260,8 @@ public class ExerciseService {
                 Math.round(totalMinutes / (float) daysCount),
                 Math.round(totalCalories / (float) daysCount)
         );
-    }
+        }
+
 
     // ---------- Update embedded entries by subdocument _id ----------
 
