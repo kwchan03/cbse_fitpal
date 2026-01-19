@@ -1,0 +1,4 @@
+com\fitpal\service\db\MongoService.class
+com\fitpal\service\rest\UserResource.class
+com\fitpal\service\UserServiceImpl.class
+com\fitpal\service\db\UserRepository.class

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features name="fitpal-osgi" xmlns="http://karaf.apache.org/xmlns/features/v1.4.0">
+    <feature name="fitpal-mongo" version="1.0.0-SNAPSHOT">
+        <bundle>mvn:org.mongodb/bson/4.10.2</bundle>
+        <bundle>mvn:org.mongodb/mongodb-driver-core/4.10.2</bundle>
+        <bundle>mvn:org.mongodb/mongodb-driver-sync/4.10.2</bundle>
+    </feature>
+
+    <feature name="fitpal-jackson" version="1.0.0-SNAPSHOT" description="Jackson JSON Processor">
+        <bundle>mvn:com.fasterxml.jackson.core/jackson-annotations/2.13.4</bundle>
+        <bundle>mvn:com.fasterxml.jackson.core/jackson-core/2.13.4</bundle>
+        <bundle>mvn:com.fasterxml.jackson.core/jackson-databind/2.13.4</bundle>
+    </feature>
+
+    <feature name="fitpal-backend" version="1.0.0-SNAPSHOT">
+        <feature>scr</feature>
+        <feature>http-whiteboard</feature>
+        <feature>aries-jax-rs-whiteboard</feature>
+        <feature>aries-jax-rs-whiteboard-jackson</feature>
+
+        <feature>fitpal-mongo</feature>
+        <feature>fitpal-mongo</feature>
+        <feature>fitpal-jackson</feature>
+
+        <bundle>mvn:org.apache.geronimo.specs/geronimo-saaj_1.3_spec/1.1</bundle>
+        <bundle>mvn:org.apache.geronimo.specs/geronimo-jaxws_2.2_spec/1.2</bundle>
+
+        <bundle>mvn:com.fitpal/fitpal-api/1.0.0-SNAPSHOT</bundle>
+        <bundle>mvn:com.fitpal/fitpal-service/1.0.0-SNAPSHOT</bundle>
+    </feature>
+</features>
