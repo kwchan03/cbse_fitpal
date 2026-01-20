@@ -30,9 +30,6 @@ public class ExerciseLog {
 
     private LocalDate date;
 
-    // Added in to avoid breaking frontend - can check
-    private Integer steps = 0;
-
     private List<WorkoutEntry> workout = new ArrayList<>();
     private List<CardioEntry> cardio = new ArrayList<>();
 
