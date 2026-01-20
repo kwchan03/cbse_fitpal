@@ -1,12 +1,15 @@
 package com.fitpal.fitpalspringbootapp.controllers;
 
+import com.fitpal.fitpalspringbootapp.dtos.*;
 import com.fitpal.fitpalspringbootapp.models.User;
 import com.fitpal.fitpalspringbootapp.services.UserService;
 import com.fitpal.fitpalspringbootapp.utils.JwtUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,10 +33,10 @@ public class UserController {
      * TODO: To be completed
      */
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody User user, HttpServletResponse response) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest registerRequest, HttpServletResponse response) {
         try {
             // TODO: Add validation
-            User savedUser = userService.registerUser(user);
+            User savedUser = userService.registerUser(registerRequest);
 
             // Generate JWT token
             String token = jwtUtil.generateToken(savedUser.getId());
@@ -62,11 +65,11 @@ public class UserController {
     @PutMapping("/create-profile")
     public ResponseEntity<?> createProfile(
             @RequestAttribute("userId") String userId,
-            @RequestPart(value = "user", required = false) User profileData,
+            @Valid @ModelAttribute("user") CreateProfileRequest profileRequest,
             @RequestPart(value = "imageFile", required = false) MultipartFile imageFile) {
         try {
             // TODO: Add validation
-            User updatedUser = userService.registerUserProfile(userId, profileData, imageFile);
+            User updatedUser = userService.registerUserProfile(userId, profileRequest, imageFile);
             return ResponseEntity.ok(updatedUser);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -84,10 +87,10 @@ public class UserController {
     @PutMapping("/create-physical")
     public ResponseEntity<?> createPhysicalInfo(
             @RequestAttribute("userId") String userId,
-            @RequestBody User physicalData) {
+            @Valid @RequestBody CreatePhysicalInfoRequest physicalRequest) {
         try {
             // TODO: Add validation
-            User updatedUser = userService.registerUserPhysicalInfo(userId, physicalData);
+            User updatedUser = userService.registerUserPhysicalInfo(userId, physicalRequest);
             return ResponseEntity.ok(updatedUser);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -119,14 +122,14 @@ public class UserController {
      * Update user profile
      * TODO: To be completed
      */
-    @PutMapping("/profile")
+    @PutMapping(value = "/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateProfile(
             @RequestAttribute("userId") String userId,
-            @RequestPart(value = "user", required = false) User profileData,
+            @Valid @ModelAttribute("user") UpdateProfileRequest profileRequest,
             @RequestPart(value = "imageFile", required = false) MultipartFile imageFile) {
         try {
             // TODO: Add validation
-            User updatedUser = userService.updateUserProfile(userId, profileData, imageFile);
+            User updatedUser = userService.updateUserProfile(userId, profileRequest, imageFile);
             return ResponseEntity.ok(updatedUser);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -143,13 +146,10 @@ public class UserController {
     @PutMapping("/change-password")
     public ResponseEntity<?> changePassword(
             @RequestAttribute("userId") String userId,
-            @RequestBody Map<String, String> passwords) {
+            @Valid @RequestBody ChangePasswordRequest passwordRequest) {
         try {
-            // TODO: Add validation
-            String currentPassword = passwords.get("currentPassword");
-            String newPassword = passwords.get("newPassword");
-
-            userService.changePassword(userId, currentPassword, newPassword);
+            userService.changePassword(userId, passwordRequest.getCurrentPassword(),
+                    passwordRequest.getNewPassword());
             return ResponseEntity.ok(Map.of("message", "Password updated successfully"));
         } catch (RuntimeException e) {
             if (e.getMessage().equals("Incorrect current password")) {
@@ -170,11 +170,10 @@ public class UserController {
     @PutMapping("/deactivate-account")
     public ResponseEntity<?> deactivateAccount(
             @RequestAttribute("userId") String userId,
-            @RequestBody Map<String, String> body,
+            @Valid @RequestBody DeactivateAccountRequest deactivateRequest,
             HttpServletResponse response) {
         try {
-            String password = body.get("password");
-            userService.deactivateAccount(userId, password);
+            userService.deactivateAccount(userId, deactivateRequest.getPassword());
 
             // Clear auth cookie
             Cookie cookie = new Cookie("auth_token", "");
@@ -198,28 +197,17 @@ public class UserController {
     }
 
     /**
-     * Alternative endpoint for deactivation
-     */
-    @PutMapping("/deactivate")
-    public ResponseEntity<?> deactivate(
-            @RequestAttribute("userId") String userId,
-            @RequestBody Map<String, String> body,
-            HttpServletResponse response) {
-        return deactivateAccount(userId, body, response);
-    }
-
-    /**
      * Reactivate user account
      */
     @PutMapping("/reactivate")
     public ResponseEntity<?> reactivateAccount(
-            @RequestBody Map<String, String> body,
+            @Valid @RequestBody ReactivateAccountRequest reactivateRequest,
             HttpServletResponse response) {
         try {
-            String email = body.get("email");
-            String password = body.get("password");
-
-            String token = userService.reactivateAccount(email, password);
+            String token = userService.reactivateAccount(
+                    reactivateRequest.getEmail(),
+                    reactivateRequest.getPassword()
+            );
 
             // Set auth cookie
             Cookie cookie = new Cookie("auth_token", token);

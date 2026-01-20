@@ -1,8 +1,15 @@
 package com.fitpal.fitpalspringbootapp.services;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
+import com.fitpal.fitpalspringbootapp.dtos.CreatePhysicalInfoRequest;
+import com.fitpal.fitpalspringbootapp.dtos.CreateProfileRequest;
+import com.fitpal.fitpalspringbootapp.dtos.RegisterRequest;
+import com.fitpal.fitpalspringbootapp.dtos.UpdateProfileRequest;
 import com.fitpal.fitpalspringbootapp.models.User;
 import com.fitpal.fitpalspringbootapp.repositories.UserRepository;
 import com.fitpal.fitpalspringbootapp.utils.JwtUtil;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -10,9 +17,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 public class UserService {
@@ -26,6 +33,9 @@ public class UserService {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
+    private Cloudinary cloudinary;
+
     // TODO: Implement Cloudinary service for image uploads
     // @Autowired
     // private CloudinaryService cloudinaryService;
@@ -34,14 +44,16 @@ public class UserService {
      * Register a new user
      * TODO: To be completed
      */
-    public User registerUser(User user) {
+    public User registerUser(RegisterRequest registerRequest) {
         // Check if user already exists
-        if (userRepository.existsByEmail(user.getEmail())) {
+        if (userRepository.existsByEmail(registerRequest.getEmail())) {
             throw new RuntimeException("User already exists");
         }
 
-        // Hash password before saving
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        User user = new User();
+        user.setEmail(registerRequest.getEmail());
+        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+        user.setDeactivated(false);
 
         // Save user
         return userRepository.save(user);
@@ -51,7 +63,7 @@ public class UserService {
      * Register/Update user profile information
      * TODO: To be completed - handle profile picture upload to Cloudinary
      */
-    public User registerUserProfile(String userId, User profileData, MultipartFile imageFile) {
+    public User registerUserProfile(String userId, CreateProfileRequest profileData, MultipartFile imageFile) {
         // Find user
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User does not exist"));
@@ -63,10 +75,10 @@ public class UserService {
         user.setDob(profileData.getDob());
 
         // TODO: Upload image to Cloudinary and set profilePictureUrl
-        // if (imageFile != null && !imageFile.isEmpty()) {
-        //     String imageUrl = cloudinaryService.uploadImage(imageFile);
-        //     user.setProfilePictureUrl(imageUrl);
-        // }
+        if (imageFile != null && !imageFile.isEmpty()) {
+            String imageUrl = uploadImagesToCloudinary(imageFile);
+            user.setProfilePictureUrl(imageUrl);
+        }
 
         return userRepository.save(user);
     }
@@ -75,7 +87,7 @@ public class UserService {
      * Register/Update user physical information and calculate daily targets
      * TODO: To be completed
      */
-    public User registerUserPhysicalInfo(String userId, User physicalData) {
+    public User registerUserPhysicalInfo(String userId, CreatePhysicalInfoRequest physicalData) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User does not exist"));
 
@@ -83,7 +95,7 @@ public class UserService {
         user.setWeight(physicalData.getWeight());
         user.setHeight(physicalData.getHeight());
         user.setActivityLevel(physicalData.getActivityLevel());
-        user.setWeightGoal(physicalData.getWeightGoal());
+        user.setWeightGoal(Integer.valueOf(physicalData.getWeightGoal()));
 
         // Calculate BMR and target calorie
         int age = calculateAge(user.getDob());
@@ -116,7 +128,7 @@ public class UserService {
      * Update user profile
      * TODO: To be completed - handle profile picture upload
      */
-    public User updateUserProfile(String userId, User profileData, MultipartFile imageFile) {
+    public User updateUserProfile(String userId, UpdateProfileRequest profileData, MultipartFile imageFile) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User does not exist"));
 
@@ -128,13 +140,13 @@ public class UserService {
         if (profileData.getWeight() != null) user.setWeight(profileData.getWeight());
         if (profileData.getHeight() != null) user.setHeight(profileData.getHeight());
         if (profileData.getActivityLevel() != null) user.setActivityLevel(profileData.getActivityLevel());
-        if (profileData.getWeightGoal() != null) user.setWeightGoal(profileData.getWeightGoal());
+        if (profileData.getWeightGoal() != null) user.setWeightGoal(Integer.valueOf(profileData.getWeightGoal()));
 
         // TODO: Upload image to Cloudinary if provided
-        // if (imageFile != null && !imageFile.isEmpty()) {
-        //     String imageUrl = cloudinaryService.uploadImage(imageFile);
-        //     user.setProfilePictureUrl(imageUrl);
-        // }
+        if (imageFile != null && !imageFile.isEmpty()) {
+            String imageUrl = uploadImagesToCloudinary(imageFile);
+            user.setProfilePictureUrl(imageUrl);
+        }
 
         // Recalculate BMR and target calorie if physical data changed
         if (user.getDob() != null && user.getWeight() != null &&
@@ -222,6 +234,23 @@ public class UserService {
         }
 
         userRepository.deleteById(userId);
+    }
+
+    private String uploadImagesToCloudinary(MultipartFile imageFile) {
+        try {
+            if (imageFile == null || imageFile.isEmpty()) {
+                throw new RuntimeException("Image file is empty");
+            }
+
+            // FIXED: Upload bytes directly instead of constructing a Data URI
+            Map<String, Object> params = new HashMap<>();
+            params.put("resource_type", "auto");
+
+            Map uploadResponse = cloudinary.uploader().upload(imageFile.getBytes(), params);
+            return (String) uploadResponse.get("secure_url");
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload image: " + e.getMessage(), e);
+        }
     }
 
     /**
