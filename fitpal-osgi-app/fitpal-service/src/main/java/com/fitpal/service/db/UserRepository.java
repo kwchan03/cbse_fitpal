@@ -167,7 +167,7 @@ public class UserRepository {
                 fDoc.append("imageUrl", food.getImageUrl());
                 foodDocs.add(fDoc);
             }
-            doc.append("favouriteFoods", foodDocs);
+            doc.append("favouriteFood", foodDocs);
         }
 
         return doc;
@@ -200,7 +200,7 @@ public class UserRepository {
         user.setDailyTargetActivity(getDoubleSafe(doc, "dailyTargetActivity"));
 
         // Map List<Document> -> List<FavouriteFood>
-        List<Document> foodDocs = doc.getList("favouriteFoods", Document.class);
+        List<Document> foodDocs = doc.getList("favouriteFood", Document.class);
         if (foodDocs != null) {
             List<User.FavouriteFood> foods = new ArrayList<>();
             for (Document fDoc : foodDocs) {

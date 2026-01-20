@@ -1,4 +1,10 @@
-com\fitpal\service\db\MongoService.class
-com\fitpal\service\rest\UserResource.class
-com\fitpal\service\UserServiceImpl.class
-com\fitpal\service\db\UserRepository.class
+com/fitpal/service/db/MongoService.class
+com/fitpal/service/MealServiceImpl$1.class
+com/fitpal/service/rest/UserResource.class
+com/fitpal/service/MealServiceImpl.class
+com/fitpal/service/FoodDiaryServiceImpl.class
+com/fitpal/service/UserServiceImpl.class
+com/fitpal/service/db/FoodDiaryRepository.class
+com/fitpal/service/rest/MealResource.class
+com/fitpal/service/db/UserRepository.class
+com/fitpal/service/rest/FoodDiaryResource.class
