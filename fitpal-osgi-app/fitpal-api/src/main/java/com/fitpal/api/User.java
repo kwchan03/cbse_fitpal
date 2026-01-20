@@ -26,7 +26,7 @@ public class User {
     private Double dailyTargetActivity;
 
     // Complex Type
-    private List<FavouriteFood> favouriteFoods = new ArrayList<>();
+    private List<FavouriteFood> favouriteFood = new ArrayList<>();
 
     public User() {
         this.createdAt = new Date(); // Default to now
@@ -85,8 +85,8 @@ public class User {
     public Double getDailyTargetActivity() { return dailyTargetActivity; }
     public void setDailyTargetActivity(Double dailyTargetActivity) { this.dailyTargetActivity = dailyTargetActivity; }
 
-    public List<FavouriteFood> getFavouriteFoods() { return favouriteFoods; }
-    public void setFavouriteFoods(List<FavouriteFood> favouriteFoods) { this.favouriteFoods = favouriteFoods; }
+    public List<FavouriteFood> getFavouriteFoods() { return favouriteFood; }
+    public void setFavouriteFoods(List<FavouriteFood> favouriteFoods) { this.favouriteFood = favouriteFoods; }
 
     // --- Inner Class for Favourite Food ---
     public static class FavouriteFood {

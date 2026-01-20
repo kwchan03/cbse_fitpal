@@ -1,4 +1,9 @@
-C:\Users\chank\Documents\UM\Y4S1\WIF3006 COMPONENT-BASED SOFTWARE ENGINEERING\fitpal\fitpal-osgi-app\fitpal-service\src\main\java\com\fitpal\service\db\MongoService.java
-C:\Users\chank\Documents\UM\Y4S1\WIF3006 COMPONENT-BASED SOFTWARE ENGINEERING\fitpal\fitpal-osgi-app\fitpal-service\src\main\java\com\fitpal\service\db\UserRepository.java
-C:\Users\chank\Documents\UM\Y4S1\WIF3006 COMPONENT-BASED SOFTWARE ENGINEERING\fitpal\fitpal-osgi-app\fitpal-service\src\main\java\com\fitpal\service\rest\UserResource.java
-C:\Users\chank\Documents\UM\Y4S1\WIF3006 COMPONENT-BASED SOFTWARE ENGINEERING\fitpal\fitpal-osgi-app\fitpal-service\src\main\java\com\fitpal\service\UserServiceImpl.java
+/Users/user/cbse_fitpal/fitpal-osgi-app/fitpal-service/src/main/java/com/fitpal/service/FoodDiaryServiceImpl.java
+/Users/user/cbse_fitpal/fitpal-osgi-app/fitpal-service/src/main/java/com/fitpal/service/MealServiceImpl.java
+/Users/user/cbse_fitpal/fitpal-osgi-app/fitpal-service/src/main/java/com/fitpal/service/UserServiceImpl.java
+/Users/user/cbse_fitpal/fitpal-osgi-app/fitpal-service/src/main/java/com/fitpal/service/db/FoodDiaryRepository.java
+/Users/user/cbse_fitpal/fitpal-osgi-app/fitpal-service/src/main/java/com/fitpal/service/db/MongoService.java
+/Users/user/cbse_fitpal/fitpal-osgi-app/fitpal-service/src/main/java/com/fitpal/service/db/UserRepository.java
+/Users/user/cbse_fitpal/fitpal-osgi-app/fitpal-service/src/main/java/com/fitpal/service/rest/FoodDiaryResource.java
+/Users/user/cbse_fitpal/fitpal-osgi-app/fitpal-service/src/main/java/com/fitpal/service/rest/MealResource.java
+/Users/user/cbse_fitpal/fitpal-osgi-app/fitpal-service/src/main/java/com/fitpal/service/rest/UserResource.java

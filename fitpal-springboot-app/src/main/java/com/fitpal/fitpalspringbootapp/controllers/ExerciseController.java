@@ -61,31 +61,31 @@ public class ExerciseController {
         }
     }
 
-    @PostMapping("/steps")
-    public ResponseEntity<?> logDailySteps(
-            @RequestAttribute("userId") String userId,
-            @RequestBody LogStepsRequest request
-    ) {
-        try {
-            ExerciseLog updated = exerciseService.logSteps(userId, request);
-            return ResponseEntity.ok(updated);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body(Map.of("message", "Failed to log daily steps"));
-        }
-    }
-
-    @GetMapping("/steps/today")
-    public ResponseEntity<?> fetchStepsToday(@RequestAttribute("userId") String userId) {
-        try {
-            return ResponseEntity.ok(exerciseService.fetchStepsToday(userId));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body(Map.of("message", "Server error"));
-        }
-    }
+//    @PostMapping("/steps")
+//    public ResponseEntity<?> logDailySteps(
+//            @RequestAttribute("userId") String userId,
+//            @RequestBody LogStepsRequest request
+//    ) {
+//        try {
+//            ExerciseLog updated = exerciseService.logSteps(userId, request);
+//            return ResponseEntity.ok(updated);
+//        } catch (IllegalArgumentException e) {
+//            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResponseEntity.status(500).body(Map.of("message", "Failed to log daily steps"));
+//        }
+//    }
+//
+//    @GetMapping("/steps/today")
+//    public ResponseEntity<?> fetchStepsToday(@RequestAttribute("userId") String userId) {
+//        try {
+//            return ResponseEntity.ok(exerciseService.fetchStepsToday(userId));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResponseEntity.status(500).body(Map.of("message", "Server error"));
+//        }
+//    }
 
     @GetMapping("/cardio/duration")
     public ResponseEntity<?> fetchCardioDuration(@RequestAttribute("userId") String userId) {

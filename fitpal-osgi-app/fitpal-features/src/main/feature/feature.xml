@@ -22,6 +22,13 @@
         <feature>fitpal-mongo</feature>
         <feature>fitpal-jackson</feature>
 
+
+        <!-- Apache HttpComponents for HTTP client -->
+        <bundle>mvn:org.apache.httpcomponents/httpcore-osgi/4.4.14</bundle>
+        <bundle>mvn:org.apache.httpcomponents/httpclient-osgi/4.5.13</bundle>
+        <bundle>mvn:commons-logging/commons-logging/1.2</bundle>
+        <bundle>mvn:commons-codec/commons-codec/1.15</bundle>
+
         <bundle>mvn:org.apache.geronimo.specs/geronimo-saaj_1.3_spec/1.1</bundle>
         <bundle>mvn:org.apache.geronimo.specs/geronimo-jaxws_2.2_spec/1.2</bundle>
 

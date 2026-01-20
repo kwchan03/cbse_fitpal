@@ -7,9 +7,9 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="fitpal-api" />
         <module name="fitpal-springboot-app" />
         <module name="fitpal-service" />
+        <module name="fitpal-api" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

@@ -20,7 +20,11 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Export-Package>com.fitpal.api</Export-Package>
+                        <Export-Package>
+                            com.fitpal.api,
+                            com.fitpal.api.dtos,
+                            com.fitpal.api.dtos.spoonacular
+                        </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
