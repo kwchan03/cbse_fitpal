@@ -3,6 +3,7 @@ package com.fitpal.fitpalspringbootapp.services;
 import com.fitpal.fitpalspringbootapp.dtos.BadgeResponse;
 import com.fitpal.fitpalspringbootapp.models.Badge;
 import com.fitpal.fitpalspringbootapp.repositories.BadgeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,14 +12,12 @@ import java.util.stream.Collectors;
 @Service
 public class BadgeService {
 
-    private final BadgeRepository badgeRepository;
-    private final DistanceService distanceService;
+    @Autowired
+    private BadgeRepository badgeRepository;
 
-    public BadgeService(BadgeRepository badgeRepository, DistanceService distanceService) {
-        this.badgeRepository = badgeRepository;
-        this.distanceService = distanceService;
-    }
-
+    @Autowired
+    private DistanceService distanceService;
+    
     public List<BadgeResponse> getEarnedBadges(String userId) {
         List<Badge> allBadges = badgeRepository.findAll();
         double totalDistance = distanceService.getTotalDistance(userId);
