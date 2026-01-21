@@ -9,4 +9,8 @@ public interface ReminderService {
     void deleteReminder(String id);
     Reminder updateReadStatus(String id);
     Reminder updateReminder(String id, Reminder reminder);
+
+    List<Reminder> getRemindersByStatus(String userId, Boolean readStatus);
+    Preference getPreferences(String userId);
+    Preference updatePreferences(String userId, Preference prefs);
 }
