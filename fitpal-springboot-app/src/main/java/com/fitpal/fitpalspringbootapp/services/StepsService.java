@@ -28,8 +28,11 @@ public class StepsService {
     }
 
     public int getDailySteps(String userId, String date) {
-        List<Steps> steps = stepsRepository.findByUserIdAndDateBetween(userId, date, date);
-        return steps.stream().mapToInt(Steps::getSteps).sum();
+        List<Steps> stepsList = stepsRepository.findByUserIdAndDate(userId, date);
+        
+        return stepsList.stream()
+                        .mapToInt(Steps::getSteps)
+                        .sum(); 
     }
 
     public int getWeeklySteps(String userId, String date) {

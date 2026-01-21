@@ -21,8 +21,13 @@ public class StepsController {
     @PostMapping
     public ResponseEntity<LogStepsResponse> logSteps(@RequestBody Map<String, Object> request, @RequestAttribute String userId) {
         Integer steps = (Integer) request.get("steps");
-        LocalDate date = LocalDate.now();
-        Steps loggedSteps = stepsService.logSteps(userId, date.toString(), steps);
+        
+        String dateStr = (String) request.get("date");
+        if (dateStr == null || dateStr.isEmpty()) {
+            dateStr = LocalDate.now().toString();
+        }
+        
+        Steps loggedSteps = stepsService.logSteps(userId, dateStr, steps);
         LogStepsResponse response = new LogStepsResponse(
             loggedSteps.getId(),
             loggedSteps.getUserId(),
