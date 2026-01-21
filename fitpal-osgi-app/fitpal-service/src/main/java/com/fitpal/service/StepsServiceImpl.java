@@ -2,6 +2,8 @@ package com.fitpal.service;
 
 import com.fitpal.api.Steps;
 import com.fitpal.api.StepsService;
+import com.fitpal.api.DistanceService;
+import com.fitpal.api.StepsCaloriesService;
 import com.fitpal.api.dtos.LogStepsRequest;
 import com.fitpal.service.db.StepsRepository;
 import org.osgi.service.component.annotations.Component;
@@ -19,6 +21,12 @@ public class StepsServiceImpl implements StepsService {
     @Reference
     private StepsRepository stepsRepository;
 
+    @Reference
+    private DistanceService distanceService;
+
+    @Reference
+    private StepsCaloriesService stepsCaloriesService;
+
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Override
@@ -28,9 +36,16 @@ public class StepsServiceImpl implements StepsService {
         }
         String date = request.getDate();
         if (date == null || date.isEmpty()) {
-            date = LocalDate.now().toString();
+            date = LocalDate.now().format(DATE_FORMATTER);
         }
-        Steps stepLog = new Steps(userId, date, request.getSteps());
+        
+        // Calculate distance for this step count
+        double distance = distanceService.calculateDistanceForSteps(request.getSteps(), userId);
+        
+        // Calculate calories based on the calculated distance
+        double calories = stepsCaloriesService.calculateCaloriesForDistance(distance, userId);
+        
+        Steps stepLog = new Steps(userId, date, request.getSteps(), distance, calories);
         return stepsRepository.save(stepLog);
     }
 

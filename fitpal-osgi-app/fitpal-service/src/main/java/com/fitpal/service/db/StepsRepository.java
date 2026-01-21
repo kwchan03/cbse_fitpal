@@ -73,6 +73,8 @@ public class StepsRepository {
         doc.append("userId", steps.getUserId());
         doc.append("date", steps.getDate());
         doc.append("steps", steps.getSteps());
+        doc.append("distance", steps.getDistance());
+        doc.append("calories", steps.getCalories());
         return doc;
     }
 
@@ -82,6 +84,35 @@ public class StepsRepository {
         steps.setUserId(doc.getString("userId"));
         steps.setDate(doc.getString("date"));
         steps.setSteps(doc.getInteger("steps"));
+        
+        // Handle distance - safely convert Integer or Double
+        Object distanceObj = doc.get("distance");
+        double distance = 0;
+        if (distanceObj != null) {
+            if (distanceObj instanceof Double) {
+                distance = (Double) distanceObj;
+            } else if (distanceObj instanceof Integer) {
+                distance = ((Integer) distanceObj).doubleValue();
+            } else if (distanceObj instanceof Number) {
+                distance = ((Number) distanceObj).doubleValue();
+            }
+        }
+        steps.setDistance(distance);
+        
+        // Handle calories - safely convert Integer or Double
+        Object caloriesObj = doc.get("calories");
+        double calories = 0;
+        if (caloriesObj != null) {
+            if (caloriesObj instanceof Double) {
+                calories = (Double) caloriesObj;
+            } else if (caloriesObj instanceof Integer) {
+                calories = ((Integer) caloriesObj).doubleValue();
+            } else if (caloriesObj instanceof Number) {
+                calories = ((Number) caloriesObj).doubleValue();
+            }
+        }
+        steps.setCalories(calories);
+        
         return steps;
     }
 }

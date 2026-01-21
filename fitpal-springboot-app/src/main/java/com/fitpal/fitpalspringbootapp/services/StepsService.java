@@ -17,13 +17,26 @@ public class StepsService {
     @Autowired
     private StepsRepository stepsRepository;
 
+    @Autowired
+    private DistanceService distanceService;
+
+    @Autowired
+    private StepsCaloriesService caloriesService;
+
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public Steps logSteps(String userId, String date, int steps) {
         if (steps <= 0) {
             throw new IllegalArgumentException("Steps must be positive");
         }
-        Steps stepLog = new Steps(userId, date, steps);
+        
+        // Calculate distance for this step count
+        double distance = distanceService.calculateDistanceForSteps(steps, userId);
+        
+        // Calculate calories based on the calculated distance
+        double calories = caloriesService.calculateCaloriesForDistance(distance, userId);
+        
+        Steps stepLog = new Steps(userId, date, steps, (double) distance, (double) calories);
         return stepsRepository.save(stepLog);
     }
 
