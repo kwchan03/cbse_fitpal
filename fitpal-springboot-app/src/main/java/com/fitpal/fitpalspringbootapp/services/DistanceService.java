@@ -26,10 +26,9 @@ public class DistanceService {
 
     public double getDailyDistance(String userId, String date) {
         List<Steps> stepsList = stepsRepository.findByUserIdAndDate(userId, date);
-        int steps = stepsList.stream().mapToInt(Steps::getSteps).sum();
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        return calculateDistance(steps, user.getHeight());
+        return stepsList.stream()
+                .mapToDouble(Steps::getDistance)
+                .sum();
     }
 
     public double getWeeklyDistance(String userId, String date) {
@@ -39,10 +38,9 @@ public class DistanceService {
         String startStr = weekStart.format(DATE_FORMATTER);
         String endStr = weekEnd.format(DATE_FORMATTER);
         List<Steps> stepsList = stepsRepository.findByUserIdAndDateBetween(userId, startStr, endStr);
-        int steps = stepsList.stream().mapToInt(Steps::getSteps).sum();
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        return calculateDistance(steps, user.getHeight());
+        return stepsList.stream()
+                .mapToDouble(Steps::getDistance)
+                .sum();
     }
 
     public double getMonthlyDistance(String userId, String month) {
@@ -52,18 +50,16 @@ public class DistanceService {
         String startStr = start.format(DATE_FORMATTER);
         String endStr = end.format(DATE_FORMATTER);
         List<Steps> stepsList = stepsRepository.findByUserIdAndDateBetween(userId, startStr, endStr);
-        int steps = stepsList.stream().mapToInt(Steps::getSteps).sum();
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        return calculateDistance(steps, user.getHeight());
+        return stepsList.stream()
+                .mapToDouble(Steps::getDistance)
+                .sum();
     }
 
     public double getTotalDistance(String userId) {
         List<Steps> stepsList = stepsRepository.findByUserId(userId);
-        int steps = stepsList.stream().mapToInt(Steps::getSteps).sum();
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        return calculateDistance(steps, user.getHeight());
+        return stepsList.stream()
+                .mapToDouble(Steps::getDistance)
+                .sum();
     }
 
     public double calculateDistanceForSteps(int steps, String userId) {
