@@ -1,39 +1,74 @@
 package com.fitpal.fitpalspringbootapp.services;
 
+import com.fitpal.fitpalspringbootapp.models.Steps;
 import com.fitpal.fitpalspringbootapp.models.User;
+import com.fitpal.fitpalspringbootapp.repositories.StepsRepository;
+import com.fitpal.fitpalspringbootapp.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
+import java.util.List;
 
 @Service
 public class DistanceService {
 
     @Autowired
-    private StepsService stepsService;
+    private StepsRepository stepsRepository;
 
     @Autowired
-    private UserService userService;
+    private UserRepository userRepository;
+
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public double getDailyDistance(String userId, String date) {
-        int steps = stepsService.getDailySteps(userId, date);
-        User user = userService.getUserInfo(userId);
+        List<Steps> stepsList = stepsRepository.findByUserIdAndDate(userId, date);
+        int steps = stepsList.stream().mapToInt(Steps::getSteps).sum();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
         return calculateDistance(steps, user.getHeight());
     }
 
     public double getWeeklyDistance(String userId, String date) {
-        int steps = stepsService.getWeeklySteps(userId, date);
-        User user = userService.getUserInfo(userId);
+        LocalDate localDate = LocalDate.parse(date, DATE_FORMATTER);
+        LocalDate weekStart = localDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        LocalDate weekEnd = localDate.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
+        String startStr = weekStart.format(DATE_FORMATTER);
+        String endStr = weekEnd.format(DATE_FORMATTER);
+        List<Steps> stepsList = stepsRepository.findByUserIdAndDateBetween(userId, startStr, endStr);
+        int steps = stepsList.stream().mapToInt(Steps::getSteps).sum();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
         return calculateDistance(steps, user.getHeight());
     }
 
     public double getMonthlyDistance(String userId, String month) {
-        int steps = stepsService.getMonthlySteps(userId, month);
-        User user = userService.getUserInfo(userId);
+        // Assume month is "yyyy-MM"
+        LocalDate start = LocalDate.parse(month + "-01", DATE_FORMATTER);
+        LocalDate end = start.withDayOfMonth(start.lengthOfMonth());
+        String startStr = start.format(DATE_FORMATTER);
+        String endStr = end.format(DATE_FORMATTER);
+        List<Steps> stepsList = stepsRepository.findByUserIdAndDateBetween(userId, startStr, endStr);
+        int steps = stepsList.stream().mapToInt(Steps::getSteps).sum();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
         return calculateDistance(steps, user.getHeight());
     }
 
     public double getTotalDistance(String userId) {
-        int steps = stepsService.getTotalSteps(userId);
-        User user = userService.getUserInfo(userId);
+        List<Steps> stepsList = stepsRepository.findByUserId(userId);
+        int steps = stepsList.stream().mapToInt(Steps::getSteps).sum();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return calculateDistance(steps, user.getHeight());
+    }
+
+    public double calculateDistanceForSteps(int steps, String userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
         return calculateDistance(steps, user.getHeight());
     }
 

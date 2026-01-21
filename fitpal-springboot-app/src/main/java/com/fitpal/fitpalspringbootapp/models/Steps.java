@@ -15,13 +15,19 @@ public class Steps {
 
     private int steps;
 
+    private double distance;
+
+    private double calories;
+
     // Constructors
     public Steps() {}
 
-    public Steps(String userId, String date, int steps) {
+    public Steps(String userId, String date, int steps, double distance, double calories) {
         this.userId = userId;
         this.date = date;
         this.steps = steps;
+        this.distance = distance;
+        this.calories = calories;
     }
 
     // Getters and Setters
@@ -55,5 +61,21 @@ public class Steps {
 
     public void setSteps(int steps) {
         this.steps = steps;
+    }
+
+    public double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(double distance) {
+        this.distance = distance;
+    }
+
+    public double getCalories() {
+        return calories;
+    }
+
+    public void setCalories(double calories) {
+        this.calories = calories;
     }
 }
