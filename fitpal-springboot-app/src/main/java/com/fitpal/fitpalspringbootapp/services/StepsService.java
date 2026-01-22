@@ -1,7 +1,9 @@
 package com.fitpal.fitpalspringbootapp.services;
 
 import com.fitpal.fitpalspringbootapp.models.Steps;
+import com.fitpal.fitpalspringbootapp.models.User;
 import com.fitpal.fitpalspringbootapp.repositories.StepsRepository;
+import com.fitpal.fitpalspringbootapp.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,9 @@ public class StepsService {
     private StepsRepository stepsRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private DistanceService distanceService;
 
     @Autowired
@@ -30,11 +35,20 @@ public class StepsService {
             throw new IllegalArgumentException("Steps must be positive");
         }
         
+        // Get user to update totalDistance
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
         // Calculate distance for this step count
         double distance = distanceService.calculateDistanceForSteps(steps, userId);
         
         // Calculate calories based on the calculated distance
         double calories = caloriesService.calculateCaloriesForDistance(distance, userId);
+        
+        // Accumulate distance to user's totalDistance
+        double currentTotal = user.getTotalDistance() != null ? user.getTotalDistance() : 0.0;
+        user.setTotalDistance(currentTotal + distance);
+        userRepository.save(user);
         
         Steps stepLog = new Steps(userId, date, steps, (double) distance, (double) calories);
         return stepsRepository.save(stepLog);

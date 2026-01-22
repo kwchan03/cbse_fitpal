@@ -155,6 +155,7 @@ public class UserRepository {
         doc.append("dailyTargetCalorie", user.getDailyTargetCalorie());
         doc.append("dailyTargetSteps", user.getDailyTargetSteps());
         doc.append("dailyTargetActivity", user.getDailyTargetActivity());
+        doc.append("totalDistance", user.getTotalDistance());
 
         // Map List<FavouriteFood> -> List<Document>
         List<User.FavouriteFood> foods = user.getFavouriteFoods();
@@ -198,6 +199,7 @@ public class UserRepository {
         user.setDailyTargetCalorie(getDoubleSafe(doc, "dailyTargetCalorie"));
         user.setDailyTargetSteps(getIntSafe(doc, "dailyTargetSteps"));
         user.setDailyTargetActivity(getDoubleSafe(doc, "dailyTargetActivity"));
+        user.setTotalDistance(getDoubleSafe(doc, "totalDistance"));
 
         // Map List<Document> -> List<FavouriteFood>
         List<Document> foodDocs = doc.getList("favouriteFood", Document.class);
