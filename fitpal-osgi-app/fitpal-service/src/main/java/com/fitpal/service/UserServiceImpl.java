@@ -1,7 +1,10 @@
 package com.fitpal.service;
 
+import com.cloudinary.Cloudinary;
 import com.fitpal.api.User;
 import com.fitpal.api.UserService;
+import com.fitpal.service.auth.PasswordService;
+import com.fitpal.service.auth.TokenService;
 import com.fitpal.service.db.UserRepository;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -19,15 +22,26 @@ public class UserServiceImpl implements UserService {
     @Reference
     private UserRepository userRepository;
 
-    // Removed PasswordService and TokenService references
+    @Reference
+    private PasswordService passwordService;
+
+    @Reference
+    private TokenService tokenService;
+
+    @Reference
+    private CloudinaryService cloudinary;
 
     // --- 1. Register User (Step 1) ---
     @Override
     public User registerUser(User user) {
-        if (userRepository.findByEmail(user.getEmail()) != null) {
+        if (userRepository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("User already exists");
         }
-        // No hashing: Save password as plain text
+
+        // SECURITY: Hash the password before saving
+        String hashedPassword = passwordService.hashPassword(user.getPassword());
+        user.setPassword(hashedPassword);
+
         return userRepository.save(user);
     }
 
@@ -42,8 +56,13 @@ public class UserServiceImpl implements UserService {
         user.setGender(profileData.getGender());
         user.setDob(profileData.getDob());
 
-        userRepository.save(user);
-        return user;
+        // Note: Image handling logic would go here (saving to disk/DB)
+        if (imageBytes != null) {
+            String url = cloudinary.uploadImage(imageBytes);
+            if (url != null) user.setProfilePictureUrl(url);
+        }
+
+        return userRepository.save(user);
     }
 
     // --- 3. Register Physical Info (Step 3 - Onboarding) ---
@@ -62,16 +81,14 @@ public class UserServiceImpl implements UserService {
         user.setDailyTargetSteps(0);
         user.setDailyTargetActivity(0);
 
-        userRepository.save(user);
-        return user;
+        return userRepository.save(user);
     }
 
     // --- 4. Get User Info ---
     @Override
     public User getUserInfo(String userId) {
-        User user = userRepository.findById(userId)
+        return userRepository.findById(userId)
                 .orElseThrow(()-> new RuntimeException("User does not exist"));
-        return user;
     }
 
     // --- 5. Update Profile (Edit Settings) ---
@@ -95,8 +112,14 @@ public class UserServiceImpl implements UserService {
             calculateAndSetTargets(user);
         }
 
-        userRepository.save(user);
-        return user;
+        if (imageBytes != null) {
+            System.out.println(imageBytes);
+            String url = cloudinary.uploadImage(imageBytes);
+            System.out.println(url);
+            if (url != null) user.setProfilePictureUrl(url);
+        }
+
+        return userRepository.save(user);
     }
 
     // --- 6. Change Password ---
@@ -105,9 +128,13 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(()-> new RuntimeException("User does not exist"));
 
-        // REMOVED: Password verification check
-        // REMOVED: Password hashing
-        user.setPassword(newPassword);
+        // SECURITY: Verify old password
+        if (!passwordService.checkPassword(currentPassword, user.getPassword())) {
+            throw new RuntimeException("Incorrect current password");
+        }
+
+        // SECURITY: Hash new password
+        user.setPassword(passwordService.hashPassword(newPassword));
         userRepository.save(user);
     }
 
@@ -117,25 +144,37 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(()-> new RuntimeException("User does not exist"));
 
-        // REMOVED: Password verification check
+        // SECURITY: Verify password before deactivation
+        if (!passwordService.checkPassword(password, user.getPassword())) {
+            throw new RuntimeException("Incorrect password");
+        }
+
         user.setDeactivated(true);
         userRepository.save(user);
     }
 
     // --- 8. Reactivate Account ---
     @Override
-    public void reactivateAccount(String email, String password) {
+    public String reactivateAccount(String email, String password) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // REMOVED: Password verification check
-        if (!user.isDeactivated()) {
+        // Verify password
+        if (!passwordService.checkPassword(password, user.getPassword())) {
+            throw new RuntimeException("Incorrect password");
+        }
+
+        // Check if already active
+        if (!user.isDeactivated()) { // Note: Spring Boot uses getDeactivated(), usually isDeactivated() for boolean
             throw new RuntimeException("Account is already active");
         }
 
+        // Reactivate
         user.setDeactivated(false);
         userRepository.save(user);
-        // REMOVED: Token generation
+
+        // MATCH SPRING BOOT: Generate and return the token here
+        return tokenService.generateToken(user.getId());
     }
 
     // --- 9. Delete Account ---
@@ -144,7 +183,11 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(()-> new RuntimeException("User does not exist"));
 
-        // REMOVED: Password verification check
+        // SECURITY: Verify password before deletion
+        if (!passwordService.checkPassword(password, user.getPassword())) {
+            throw new RuntimeException("Incorrect password");
+        }
+
         userRepository.deleteById(userId);
     }
 

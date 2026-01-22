@@ -39,7 +39,7 @@ public class User {
 
     private Double height;
 
-    private Integer activityLevel;
+    private Double activityLevel;
 
     private Integer weightGoal; // -500, 0, or 500
 

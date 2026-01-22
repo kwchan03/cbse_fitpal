@@ -34,6 +34,10 @@
         <!-- Jackson JSON Support -->
         <feature>fitpal-jackson</feature>
 
+        <bundle>mvn:io.jsonwebtoken/jjwt-api/0.11.5</bundle>
+        <bundle>mvn:io.jsonwebtoken/jjwt-impl/0.11.5</bundle>
+        <bundle>mvn:io.jsonwebtoken/jjwt-jackson/0.11.5</bundle>
+
         <!-- Apache HttpComponents -->
         <bundle>mvn:commons-logging/commons-logging/1.2</bundle>
         <bundle>mvn:commons-codec/commons-codec/1.15</bundle>
