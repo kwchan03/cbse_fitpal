@@ -17,9 +17,6 @@
             <version>2.13.4</version>
             <scope>compile</scope>
         </dependency>
-    </dependencies>
-
-    <dependencies>
         <!-- OSGi -->
         <dependency>
             <groupId>org.osgi</groupId>
