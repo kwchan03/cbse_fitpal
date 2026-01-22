@@ -58,14 +58,6 @@ public class DistanceServiceImpl implements DistanceService {
                 .sum();
     }
 
-    @Override
-    public double getTotalDistance(String userId) {
-        List<Steps> stepsList = stepsRepository.findByUserId(userId);
-        return stepsList.stream()
-                .mapToDouble(Steps::getDistance)
-                .sum();
-    }
-
     public double calculateDistanceForSteps(int steps, String userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
         return calculateDistance(steps, user.getHeight());

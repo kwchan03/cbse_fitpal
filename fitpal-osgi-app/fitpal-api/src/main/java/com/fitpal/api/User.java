@@ -19,11 +19,13 @@ public class User {
     private Integer weightGoal;      // enum: -500, 0, 500
     private Date createdAt;
     private boolean deactivated;
+    private Double totalDistance = 0.0;
 
     // Daily Targets
     private Double dailyTargetCalorie;
     private Integer dailyTargetSteps;
     private Double dailyTargetActivity;
+    
 
     // Complex Type
     private List<FavouriteFood> favouriteFood = new ArrayList<>();
@@ -84,6 +86,9 @@ public class User {
 
     public Double getDailyTargetActivity() { return dailyTargetActivity; }
     public void setDailyTargetActivity(Double dailyTargetActivity) { this.dailyTargetActivity = dailyTargetActivity; }
+
+    public Double getTotalDistance() { return totalDistance; }
+    public void setTotalDistance(Double totalDistance) { this.totalDistance = totalDistance; }
 
     public List<FavouriteFood> getFavouriteFoods() { return favouriteFood; }
     public void setFavouriteFoods(List<FavouriteFood> favouriteFoods) { this.favouriteFood = favouriteFoods; }
