@@ -1,16 +1,28 @@
-/Users/user/cbse_fitpal/fitpal-osgi-app/fitpal-api/src/main/java/com/fitpal/api/FoodDiary.java
-/Users/user/cbse_fitpal/fitpal-osgi-app/fitpal-api/src/main/java/com/fitpal/api/FoodDiaryService.java
-/Users/user/cbse_fitpal/fitpal-osgi-app/fitpal-api/src/main/java/com/fitpal/api/MealService.java
-/Users/user/cbse_fitpal/fitpal-osgi-app/fitpal-api/src/main/java/com/fitpal/api/User.java
-/Users/user/cbse_fitpal/fitpal-osgi-app/fitpal-api/src/main/java/com/fitpal/api/UserService.java
-/Users/user/cbse_fitpal/fitpal-osgi-app/fitpal-api/src/main/java/com/fitpal/api/dtos/AddFoodRequest.java
-/Users/user/cbse_fitpal/fitpal-osgi-app/fitpal-api/src/main/java/com/fitpal/api/dtos/AddToFavouriteRequest.java
-/Users/user/cbse_fitpal/fitpal-osgi-app/fitpal-api/src/main/java/com/fitpal/api/dtos/CalorieSummaryResponse.java
-/Users/user/cbse_fitpal/fitpal-osgi-app/fitpal-api/src/main/java/com/fitpal/api/dtos/FoodDiaryDTO.java
-/Users/user/cbse_fitpal/fitpal-osgi-app/fitpal-api/src/main/java/com/fitpal/api/dtos/MealSearchResponse.java
-/Users/user/cbse_fitpal/fitpal-osgi-app/fitpal-api/src/main/java/com/fitpal/api/dtos/MealSearchResult.java
-/Users/user/cbse_fitpal/fitpal-osgi-app/fitpal-api/src/main/java/com/fitpal/api/dtos/RecommendMealRequest.java
-/Users/user/cbse_fitpal/fitpal-osgi-app/fitpal-api/src/main/java/com/fitpal/api/dtos/spoonacular/MealPlanResponse.java
-/Users/user/cbse_fitpal/fitpal-osgi-app/fitpal-api/src/main/java/com/fitpal/api/dtos/spoonacular/NutritionResponse.java
-/Users/user/cbse_fitpal/fitpal-osgi-app/fitpal-api/src/main/java/com/fitpal/api/dtos/spoonacular/RecipeAutocomplete.java
-/Users/user/cbse_fitpal/fitpal-osgi-app/fitpal-api/src/main/java/com/fitpal/api/dtos/spoonacular/RecipeInformation.java
+C:\Users\chank\Documents\UM\Y4S1\WIF3006 COMPONENT-BASED SOFTWARE ENGINEERING\fitpal\fitpal-osgi-app\fitpal-api\src\main\java\com\fitpal\api\AuthService.java
+C:\Users\chank\Documents\UM\Y4S1\WIF3006 COMPONENT-BASED SOFTWARE ENGINEERING\fitpal\fitpal-osgi-app\fitpal-api\src\main\java\com\fitpal\api\dtos\AddFoodRequest.java
+C:\Users\chank\Documents\UM\Y4S1\WIF3006 COMPONENT-BASED SOFTWARE ENGINEERING\fitpal\fitpal-osgi-app\fitpal-api\src\main\java\com\fitpal\api\dtos\AddToFavouriteRequest.java
+C:\Users\chank\Documents\UM\Y4S1\WIF3006 COMPONENT-BASED SOFTWARE ENGINEERING\fitpal\fitpal-osgi-app\fitpal-api\src\main\java\com\fitpal\api\dtos\CalorieSummaryResponse.java
+C:\Users\chank\Documents\UM\Y4S1\WIF3006 COMPONENT-BASED SOFTWARE ENGINEERING\fitpal\fitpal-osgi-app\fitpal-api\src\main\java\com\fitpal\api\dtos\ChangePasswordRequest.java
+C:\Users\chank\Documents\UM\Y4S1\WIF3006 COMPONENT-BASED SOFTWARE ENGINEERING\fitpal\fitpal-osgi-app\fitpal-api\src\main\java\com\fitpal\api\dtos\CreatePhysicalInfoRequest.java
+C:\Users\chank\Documents\UM\Y4S1\WIF3006 COMPONENT-BASED SOFTWARE ENGINEERING\fitpal\fitpal-osgi-app\fitpal-api\src\main\java\com\fitpal\api\dtos\CreateProfileRequest.java
+C:\Users\chank\Documents\UM\Y4S1\WIF3006 COMPONENT-BASED SOFTWARE ENGINEERING\fitpal\fitpal-osgi-app\fitpal-api\src\main\java\com\fitpal\api\dtos\FoodDiaryDTO.java
+C:\Users\chank\Documents\UM\Y4S1\WIF3006 COMPONENT-BASED SOFTWARE ENGINEERING\fitpal\fitpal-osgi-app\fitpal-api\src\main\java\com\fitpal\api\dtos\LoginRequest.java
+C:\Users\chank\Documents\UM\Y4S1\WIF3006 COMPONENT-BASED SOFTWARE ENGINEERING\fitpal\fitpal-osgi-app\fitpal-api\src\main\java\com\fitpal\api\dtos\LoginResponse.java
+C:\Users\chank\Documents\UM\Y4S1\WIF3006 COMPONENT-BASED SOFTWARE ENGINEERING\fitpal\fitpal-osgi-app\fitpal-api\src\main\java\com\fitpal\api\dtos\MealSearchResponse.java
+C:\Users\chank\Documents\UM\Y4S1\WIF3006 COMPONENT-BASED SOFTWARE ENGINEERING\fitpal\fitpal-osgi-app\fitpal-api\src\main\java\com\fitpal\api\dtos\MealSearchResult.java
+C:\Users\chank\Documents\UM\Y4S1\WIF3006 COMPONENT-BASED SOFTWARE ENGINEERING\fitpal\fitpal-osgi-app\fitpal-api\src\main\java\com\fitpal\api\dtos\PasswordVerificationRequest.java
+C:\Users\chank\Documents\UM\Y4S1\WIF3006 COMPONENT-BASED SOFTWARE ENGINEERING\fitpal\fitpal-osgi-app\fitpal-api\src\main\java\com\fitpal\api\dtos\ReactivateAccountRequest.java
+C:\Users\chank\Documents\UM\Y4S1\WIF3006 COMPONENT-BASED SOFTWARE ENGINEERING\fitpal\fitpal-osgi-app\fitpal-api\src\main\java\com\fitpal\api\dtos\RecommendMealRequest.java
+C:\Users\chank\Documents\UM\Y4S1\WIF3006 COMPONENT-BASED SOFTWARE ENGINEERING\fitpal\fitpal-osgi-app\fitpal-api\src\main\java\com\fitpal\api\dtos\RegisterRequest.java
+C:\Users\chank\Documents\UM\Y4S1\WIF3006 COMPONENT-BASED SOFTWARE ENGINEERING\fitpal\fitpal-osgi-app\fitpal-api\src\main\java\com\fitpal\api\dtos\spoonacular\MealPlanResponse.java
+C:\Users\chank\Documents\UM\Y4S1\WIF3006 COMPONENT-BASED SOFTWARE ENGINEERING\fitpal\fitpal-osgi-app\fitpal-api\src\main\java\com\fitpal\api\dtos\spoonacular\NutritionResponse.java
+C:\Users\chank\Documents\UM\Y4S1\WIF3006 COMPONENT-BASED SOFTWARE ENGINEERING\fitpal\fitpal-osgi-app\fitpal-api\src\main\java\com\fitpal\api\dtos\spoonacular\RecipeAutocomplete.java
+C:\Users\chank\Documents\UM\Y4S1\WIF3006 COMPONENT-BASED SOFTWARE ENGINEERING\fitpal\fitpal-osgi-app\fitpal-api\src\main\java\com\fitpal\api\dtos\spoonacular\RecipeInformation.java
+C:\Users\chank\Documents\UM\Y4S1\WIF3006 COMPONENT-BASED SOFTWARE ENGINEERING\fitpal\fitpal-osgi-app\fitpal-api\src\main\java\com\fitpal\api\dtos\UpdateProfileRequest.java
+C:\Users\chank\Documents\UM\Y4S1\WIF3006 COMPONENT-BASED SOFTWARE ENGINEERING\fitpal\fitpal-osgi-app\fitpal-api\src\main\java\com\fitpal\api\FoodDiary.java
+C:\Users\chank\Documents\UM\Y4S1\WIF3006 COMPONENT-BASED SOFTWARE ENGINEERING\fitpal\fitpal-osgi-app\fitpal-api\src\main\java\com\fitpal\api\FoodDiaryService.java
+C:\Users\chank\Documents\UM\Y4S1\WIF3006 COMPONENT-BASED SOFTWARE ENGINEERING\fitpal\fitpal-osgi-app\fitpal-api\src\main\java\com\fitpal\api\MealService.java
+C:\Users\chank\Documents\UM\Y4S1\WIF3006 COMPONENT-BASED SOFTWARE ENGINEERING\fitpal\fitpal-osgi-app\fitpal-api\src\main\java\com\fitpal\api\Reminder.java
+C:\Users\chank\Documents\UM\Y4S1\WIF3006 COMPONENT-BASED SOFTWARE ENGINEERING\fitpal\fitpal-osgi-app\fitpal-api\src\main\java\com\fitpal\api\ReminderService.java
+C:\Users\chank\Documents\UM\Y4S1\WIF3006 COMPONENT-BASED SOFTWARE ENGINEERING\fitpal\fitpal-osgi-app\fitpal-api\src\main\java\com\fitpal\api\User.java
+C:\Users\chank\Documents\UM\Y4S1\WIF3006 COMPONENT-BASED SOFTWARE ENGINEERING\fitpal\fitpal-osgi-app\fitpal-api\src\main\java\com\fitpal\api\UserService.java

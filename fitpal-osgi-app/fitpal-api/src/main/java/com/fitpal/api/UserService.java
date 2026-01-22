@@ -18,7 +18,7 @@ public interface UserService {
 
     // --- Reactivate Account ---
     // Changed return type from String (token) to void
-    void reactivateAccount(String email, String password);
+    String reactivateAccount(String email, String password);
 
     void deleteAccount(String userId, String password) throws Exception;
 
