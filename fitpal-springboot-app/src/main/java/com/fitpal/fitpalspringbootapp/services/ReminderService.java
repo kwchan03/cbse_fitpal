@@ -1,7 +1,10 @@
 package com.fitpal.fitpalspringbootapp.services;
 
+import com.fitpal.fitpalspringbootapp.dtos.PreferenceDto;
 import com.fitpal.fitpalspringbootapp.dtos.ReminderDto;
+import com.fitpal.fitpalspringbootapp.models.Preference;
 import com.fitpal.fitpalspringbootapp.models.Reminder;
+import com.fitpal.fitpalspringbootapp.repositories.PreferenceRepository;
 import com.fitpal.fitpalspringbootapp.repositories.ReminderRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,9 @@ public class ReminderService {
 
     @Autowired
     private ReminderRepository reminderRepository;
+
+    @Autowired
+    private PreferenceRepository preferenceRepository;
 
     @Transactional
     public ReminderDto createReminder(ReminderDto dto, String userId) {
@@ -73,6 +79,41 @@ public class ReminderService {
 
         Reminder updated = reminderRepository.save(reminder);
         return convertToDto(updated);
+    }
+
+    public List<ReminderDto> getRemindersByStatus(String userId, Boolean readStatus) {
+        List<Reminder> reminders = reminderRepository.findByUserIdAndTypeAndReadStatusOrderByCreatedAtDesc(userId, "reminder", readStatus);
+        return reminders.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
+    public PreferenceDto getPreferences(String userId) {
+        Preference pref = preferenceRepository.findByUserId(userId)
+                .orElseGet(() -> {
+                    Preference newPref = new Preference();
+                    newPref.setUserId(userId);
+                    return preferenceRepository.save(newPref);
+                });
+        return convertToPreferenceDto(pref);
+    }
+
+    @Transactional
+    public PreferenceDto updatePreferences(String userId, PreferenceDto dto) {
+        Preference pref = preferenceRepository.findByUserId(userId)
+                .orElse(new Preference());
+
+        pref.setUserId(userId);
+        if (dto.getPushEnabled() != null) pref.setPushEnabled(dto.getPushEnabled());
+        if (dto.getEmailEnabled() != null) pref.setEmailEnabled(dto.getEmailEnabled());
+        if (dto.getDoNotDisturb() != null) pref.setDoNotDisturb(dto.getDoNotDisturb());
+
+        Preference saved = preferenceRepository.save(pref);
+        return convertToPreferenceDto(saved);
+    }
+
+    private PreferenceDto convertToPreferenceDto(Preference entity) {
+        PreferenceDto dto = new PreferenceDto();
+        BeanUtils.copyProperties(entity, dto);
+        return dto;
     }
 
     private ReminderDto convertToDto(Reminder entity) {

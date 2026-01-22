@@ -1,5 +1,6 @@
 package com.fitpal.service.rest;
 
+import com.fitpal.api.Preference;
 import com.fitpal.api.Reminder;
 import com.fitpal.api.ReminderService;
 import org.osgi.service.component.annotations.Component;
@@ -168,6 +169,50 @@ public class ReminderResource {
             return errorResponse(404, e.getMessage());
         } catch (Exception e) {
             return errorResponse(500, "Update failed: " + e.getMessage());
+        }
+    }
+
+    @GET
+    @Path("/filter")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response filterReminders(
+            @QueryParam("userId") String userId,
+            @QueryParam("read") Boolean read) {
+        try {
+            if (userId == null) return errorResponse(400, "userId is required");
+            if (read == null) return errorResponse(400, "read status is required");
+
+            List<Reminder> list = reminderService.getRemindersByStatus(userId, read);
+            return successResponse(200, list);
+        } catch (Exception e) {
+            return errorResponse(500, e.getMessage());
+        }
+    }
+
+    @GET
+    @Path("/preferences")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getPreferences(@QueryParam("userId") String userId) {
+        try {
+            if (userId == null) return errorResponse(400, "userId is required");
+            return successResponse(200, reminderService.getPreferences(userId));
+        } catch (Exception e) {
+            return errorResponse(500, e.getMessage());
+        }
+    }
+
+    @PUT
+    @Path("/preferences")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updatePreferences(@QueryParam("userId") String userId, Preference prefs) {
+        try {
+            if (userId == null) return errorResponse(400, "userId is required");
+
+            Preference updated = reminderService.updatePreferences(userId, prefs);
+            return successResponse(200, updated);
+        } catch (Exception e) {
+            return errorResponse(500, e.getMessage());
         }
     }
 }
