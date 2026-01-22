@@ -1,11 +1,13 @@
-package com.fitpal.fitpalspringbootapp.services;
+package com.fitpal.service;
 
-import com.fitpal.fitpalspringbootapp.models.User;
-import com.fitpal.fitpalspringbootapp.models.Steps;
-import com.fitpal.fitpalspringbootapp.repositories.UserRepository;
-import com.fitpal.fitpalspringbootapp.repositories.StepsRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.fitpal.api.Steps;
+import com.fitpal.api.StepsCaloriesService;
+import com.fitpal.api.User;
+import com.fitpal.service.db.StepsRepository;
+import com.fitpal.service.db.UserRepository;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -13,17 +15,18 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
-@Service
-public class StepsCaloriesService {
+@Component(service = StepsCaloriesService.class)
+public class StepsCaloriesServiceImpl implements StepsCaloriesService {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
+    @Reference
     private StepsRepository stepsRepository;
+
+    @Reference
+    private UserRepository userRepository;
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+    @Override
     public double getDailyCalories(String userId, String date) {
         List<Steps> dailySteps = stepsRepository.findByUserIdAndDate(userId, date);
         
@@ -32,6 +35,7 @@ public class StepsCaloriesService {
                 .sum();
     }
 
+    @Override
     public double getWeeklyCalories(String userId, String date) {
         LocalDate localDate = LocalDate.parse(date, DATE_FORMATTER);
         LocalDate weekStart = localDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
@@ -47,6 +51,7 @@ public class StepsCaloriesService {
                 .sum();
     }
 
+    @Override
     public double getMonthlyCalories(String userId, String month) {
         YearMonth yearMonth = YearMonth.parse(month, DateTimeFormatter.ofPattern("yyyy-MM"));
         LocalDate startDate = yearMonth.atDay(1);
@@ -62,9 +67,9 @@ public class StepsCaloriesService {
                 .sum();
     }
 
+    @Override
     public double calculateCaloriesForDistance(double distance, String userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
         return calculateCalories(distance, user.getWeight());
     }
 

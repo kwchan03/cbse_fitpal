@@ -1,11 +1,12 @@
-package com.fitpal.fitpalspringbootapp.services;
+package com.fitpal.service;
 
-import com.fitpal.fitpalspringbootapp.models.Steps;
-import com.fitpal.fitpalspringbootapp.models.User;
-import com.fitpal.fitpalspringbootapp.repositories.StepsRepository;
-import com.fitpal.fitpalspringbootapp.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.fitpal.api.DistanceService;
+import com.fitpal.api.Steps;
+import com.fitpal.api.User;
+import com.fitpal.service.db.UserRepository;
+import com.fitpal.service.db.StepsRepository;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -13,17 +14,18 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
-@Service
-public class DistanceService {
+@Component(service = DistanceService.class)
+public class DistanceServiceImpl implements DistanceService {
 
-    @Autowired
+    @Reference
     private StepsRepository stepsRepository;
 
-    @Autowired
+    @Reference
     private UserRepository userRepository;
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+    @Override
     public double getDailyDistance(String userId, String date) {
         List<Steps> stepsList = stepsRepository.findByUserIdAndDate(userId, date);
         return stepsList.stream()
@@ -31,6 +33,7 @@ public class DistanceService {
                 .sum();
     }
 
+    @Override
     public double getWeeklyDistance(String userId, String date) {
         LocalDate localDate = LocalDate.parse(date, DATE_FORMATTER);
         LocalDate weekStart = localDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
@@ -43,8 +46,8 @@ public class DistanceService {
                 .sum();
     }
 
+    @Override
     public double getMonthlyDistance(String userId, String month) {
-        // Assume month is "yyyy-MM"
         LocalDate start = LocalDate.parse(month + "-01", DATE_FORMATTER);
         LocalDate end = start.withDayOfMonth(start.lengthOfMonth());
         String startStr = start.format(DATE_FORMATTER);
@@ -55,6 +58,7 @@ public class DistanceService {
                 .sum();
     }
 
+    @Override
     public double getTotalDistance(String userId) {
         List<Steps> stepsList = stepsRepository.findByUserId(userId);
         return stepsList.stream()
@@ -63,8 +67,7 @@ public class DistanceService {
     }
 
     public double calculateDistanceForSteps(int steps, String userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
         return calculateDistance(steps, user.getHeight());
     }
 

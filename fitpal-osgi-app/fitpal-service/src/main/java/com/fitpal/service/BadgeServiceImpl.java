@@ -1,23 +1,26 @@
-package com.fitpal.fitpalspringbootapp.services;
+package com.fitpal.service;
 
-import com.fitpal.fitpalspringbootapp.dtos.BadgeResponse;
-import com.fitpal.fitpalspringbootapp.models.Badge;
-import com.fitpal.fitpalspringbootapp.repositories.BadgeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.fitpal.api.Badge;
+import com.fitpal.api.BadgeService;
+import com.fitpal.api.DistanceService;
+import com.fitpal.api.dtos.BadgeResponse;
+import com.fitpal.service.db.BadgeRepository;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
-public class BadgeService {
+@Component(service = BadgeService.class)
+public class BadgeServiceImpl implements BadgeService {
 
-    @Autowired
+    @Reference
     private BadgeRepository badgeRepository;
 
-    @Autowired
+    @Reference
     private DistanceService distanceService;
-    
+
+    @Override
     public List<BadgeResponse> getEarnedBadges(String userId) {
         List<Badge> allBadges = badgeRepository.findAll();
         double totalDistance = distanceService.getTotalDistance(userId);

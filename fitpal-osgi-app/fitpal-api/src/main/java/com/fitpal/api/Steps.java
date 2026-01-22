@@ -1,12 +1,7 @@
-package com.fitpal.fitpalspringbootapp.models;
+package com.fitpal.api;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-@Document(collection = "steps")
 public class Steps {
 
-    @Id
     private String id;
 
     private String userId;
@@ -21,6 +16,12 @@ public class Steps {
 
     // Constructors
     public Steps() {}
+
+    public Steps(String userId, String date, int steps) {
+        this.userId = userId;
+        this.date = date;
+        this.steps = steps;
+    }
 
     public Steps(String userId, String date, int steps, double distance, double calories) {
         this.userId = userId;

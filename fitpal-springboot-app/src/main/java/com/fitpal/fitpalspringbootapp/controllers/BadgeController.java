@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/badges")
+@RequestMapping("/api/badges")
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class BadgeController {
 

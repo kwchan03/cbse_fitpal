@@ -1,9 +1,13 @@
-package com.fitpal.fitpalspringbootapp.services;
+package com.fitpal.service;
 
-import com.fitpal.fitpalspringbootapp.models.Steps;
-import com.fitpal.fitpalspringbootapp.repositories.StepsRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.fitpal.api.Steps;
+import com.fitpal.api.StepsService;
+import com.fitpal.api.DistanceService;
+import com.fitpal.api.StepsCaloriesService;
+import com.fitpal.api.dtos.LogStepsRequest;
+import com.fitpal.service.db.StepsRepository;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -11,43 +15,49 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
-@Service
-public class StepsService {
+@Component(service = StepsService.class)
+public class StepsServiceImpl implements StepsService {
 
-    @Autowired
+    @Reference
     private StepsRepository stepsRepository;
 
-    @Autowired
+    @Reference
     private DistanceService distanceService;
 
-    @Autowired
-    private StepsCaloriesService caloriesService;
+    @Reference
+    private StepsCaloriesService stepsCaloriesService;
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    public Steps logSteps(String userId, String date, int steps) {
-        if (steps <= 0) {
+    @Override
+    public Steps logSteps(LogStepsRequest request, String userId) {
+        if (request.getSteps() <= 0) {
             throw new IllegalArgumentException("Steps must be positive");
+        }
+        String date = request.getDate();
+        if (date == null || date.isEmpty()) {
+            date = LocalDate.now().format(DATE_FORMATTER);
         }
         
         // Calculate distance for this step count
-        double distance = distanceService.calculateDistanceForSteps(steps, userId);
+        double distance = distanceService.calculateDistanceForSteps(request.getSteps(), userId);
         
         // Calculate calories based on the calculated distance
-        double calories = caloriesService.calculateCaloriesForDistance(distance, userId);
+        double calories = stepsCaloriesService.calculateCaloriesForDistance(distance, userId);
         
-        Steps stepLog = new Steps(userId, date, steps, (double) distance, (double) calories);
+        Steps stepLog = new Steps(userId, date, request.getSteps(), distance, calories);
         return stepsRepository.save(stepLog);
     }
 
+    @Override
     public int getDailySteps(String userId, String date) {
         List<Steps> stepsList = stepsRepository.findByUserIdAndDate(userId, date);
-        
         return stepsList.stream()
-                        .mapToInt(Steps::getSteps)
-                        .sum(); 
+                .mapToInt(Steps::getSteps)
+                .sum();
     }
 
+    @Override
     public int getWeeklySteps(String userId, String date) {
         LocalDate localDate = LocalDate.parse(date, DATE_FORMATTER);
         LocalDate weekStart = localDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
@@ -58,6 +68,7 @@ public class StepsService {
         return steps.stream().mapToInt(Steps::getSteps).sum();
     }
 
+    @Override
     public int getMonthlySteps(String userId, String month) {
         // Assume month is "yyyy-MM"
         LocalDate start = LocalDate.parse(month + "-01", DATE_FORMATTER);
@@ -68,6 +79,7 @@ public class StepsService {
         return steps.stream().mapToInt(Steps::getSteps).sum();
     }
 
+    @Override
     public int getTotalSteps(String userId) {
         List<Steps> steps = stepsRepository.findByUserId(userId);
         return steps.stream().mapToInt(Steps::getSteps).sum();
