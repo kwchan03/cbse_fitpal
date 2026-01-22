@@ -155,6 +155,7 @@ public class UserRepository {
         doc.append("dailyTargetCalorie", user.getDailyTargetCalorie());
         doc.append("dailyTargetSteps", user.getDailyTargetSteps());
         doc.append("dailyTargetActivity", user.getDailyTargetActivity());
+        doc.append("totalDistance", user.getTotalDistance());
 
         // Map List<FavouriteFood> -> List<Document>
         List<User.FavouriteFood> foods = user.getFavouriteFoods();

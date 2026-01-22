@@ -53,6 +53,8 @@ public class User {
 
     private Integer dailyTargetActivity;
 
+    private Double totalDistance = 0.0; 
+
     private List<FavouriteFood> favouriteFood = new ArrayList<>();
 
     // Inner class for embedded favourite food documents
