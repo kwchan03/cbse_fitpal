@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
         calculateAndSetTargets(user);
 
         user.setDailyTargetSteps(0);
-        user.setDailyTargetActivity(0.0);
+        user.setDailyTargetActivity(0);
 
         userRepository.save(user);
         return user;
@@ -172,7 +172,7 @@ public class UserServiceImpl implements UserService {
 
         double activityMultiplier = (user.getActivityLevel() != null) ? user.getActivityLevel() : 1.2;
         double weightGoalAdjustment = (user.getWeightGoal() != null) ? user.getWeightGoal() : 0;
-        double targetCalorie = Math.ceil(bmr * activityMultiplier + weightGoalAdjustment);
+        int targetCalorie = (int) Math.ceil(bmr * activityMultiplier + weightGoalAdjustment);
         user.setDailyTargetCalorie(targetCalorie);
     }
 

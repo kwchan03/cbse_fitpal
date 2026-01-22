@@ -22,9 +22,9 @@ public class User {
     private Double totalDistance = 0.0;
 
     // Daily Targets
-    private Double dailyTargetCalorie;
+    private Integer dailyTargetCalorie;
     private Integer dailyTargetSteps;
-    private Double dailyTargetActivity;
+    private Integer dailyTargetActivity;
     
 
     // Complex Type
@@ -78,14 +78,14 @@ public class User {
     public boolean isDeactivated() { return deactivated; }
     public void setDeactivated(boolean deactivated) { this.deactivated = deactivated; }
 
-    public Double getDailyTargetCalorie() { return dailyTargetCalorie; }
-    public void setDailyTargetCalorie(Double dailyTargetCalorie) { this.dailyTargetCalorie = dailyTargetCalorie; }
+    public Integer getDailyTargetCalorie() { return dailyTargetCalorie; }
+    public void setDailyTargetCalorie(Integer dailyTargetCalorie) { this.dailyTargetCalorie = dailyTargetCalorie; }
 
     public Integer getDailyTargetSteps() { return dailyTargetSteps; }
     public void setDailyTargetSteps(Integer dailyTargetSteps) { this.dailyTargetSteps = dailyTargetSteps; }
 
-    public Double getDailyTargetActivity() { return dailyTargetActivity; }
-    public void setDailyTargetActivity(Double dailyTargetActivity) { this.dailyTargetActivity = dailyTargetActivity; }
+    public Integer getDailyTargetActivity() { return dailyTargetActivity; }
+    public void setDailyTargetActivity(Integer dailyTargetActivity) { this.dailyTargetActivity = dailyTargetActivity; }
 
     public Double getTotalDistance() { return totalDistance; }
     public void setTotalDistance(Double totalDistance) { this.totalDistance = totalDistance; }
