@@ -19,6 +19,36 @@
         </dependency>
     </dependencies>
 
+    <dependencies>
+        <!-- OSGi -->
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>6.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <!-- MongoDB BSON -->
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>bson</artifactId>
+            <version>4.5.0</version>
+        </dependency>
+
+        <!-- Jackson for JSON -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.13.0</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.13.0</version>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -33,6 +63,13 @@
                             com.fitpal.api.dtos,
                             com.fitpal.api.dtos.spoonacular
                         </Export-Package>
+                        <Import-Package>
+                            org.bson,
+                            org.bson.types,
+                            com.fasterxml.jackson.annotation,
+                            com.fasterxml.jackson.databind,
+                            *
+                        </Import-Package>
                     </instructions>
                 </configuration>
             </plugin>

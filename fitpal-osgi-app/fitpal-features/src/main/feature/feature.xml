@@ -1,41 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <features name="fitpal-osgi" xmlns="http://karaf.apache.org/xmlns/features/v1.4.0">
+    
+    <!-- MongoDB Driver Bundle -->
     <feature name="fitpal-mongo" version="1.0.0-SNAPSHOT">
         <bundle>mvn:org.mongodb/bson/4.10.2</bundle>
         <bundle>mvn:org.mongodb/mongodb-driver-core/4.10.2</bundle>
         <bundle>mvn:org.mongodb/mongodb-driver-sync/4.10.2</bundle>
     </feature>
 
-    <feature name="fitpal-jackson" version="1.0.0-SNAPSHOT" description="Jackson JSON Processor">
+    <!-- Jackson JSON Processor -->
+    <feature name="fitpal-jackson" version="1.0.0-SNAPSHOT">
         <bundle>mvn:com.fasterxml.jackson.core/jackson-annotations/2.13.4</bundle>
         <bundle>mvn:com.fasterxml.jackson.core/jackson-core/2.13.4</bundle>
         <bundle>mvn:com.fasterxml.jackson.core/jackson-databind/2.13.4</bundle>
+        <bundle>mvn:com.fasterxml.jackson.datatype/jackson-datatype-jsr310/2.13.0</bundle>
+        <bundle>mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-base/2.13.4</bundle>
+        <bundle>mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-json-provider/2.13.4</bundle>
     </feature>
 
+    <!-- Main FitPal Backend Feature -->
     <feature name="fitpal-backend" version="1.0.0-SNAPSHOT">
+        <!-- OSGi Services -->
         <feature>scr</feature>
         <feature>http-whiteboard</feature>
+        
+        <!-- JAX-RS REST Framework -->
         <feature>aries-jax-rs-whiteboard</feature>
         <feature>aries-jax-rs-whiteboard-jackson</feature>
 
+        <!-- MongoDB Support -->
         <feature>fitpal-mongo</feature>
-        <feature>fitpal-mongo</feature>
+        
+        <!-- Jackson JSON Support -->
         <feature>fitpal-jackson</feature>
 
         <bundle>mvn:io.jsonwebtoken/jjwt-api/0.11.5</bundle>
         <bundle>mvn:io.jsonwebtoken/jjwt-impl/0.11.5</bundle>
         <bundle>mvn:io.jsonwebtoken/jjwt-jackson/0.11.5</bundle>
 
-        <!-- Apache HttpComponents for HTTP client -->
-        <bundle>mvn:org.apache.httpcomponents/httpcore-osgi/4.4.14</bundle>
-        <bundle>mvn:org.apache.httpcomponents/httpclient-osgi/4.5.13</bundle>
+        <!-- Apache HttpComponents -->
         <bundle>mvn:commons-logging/commons-logging/1.2</bundle>
         <bundle>mvn:commons-codec/commons-codec/1.15</bundle>
+        <bundle>mvn:org.apache.httpcomponents/httpcore-osgi/4.4.14</bundle>
+        <bundle>mvn:org.apache.httpcomponents/httpclient-osgi/4.5.13</bundle>
 
-        <bundle>mvn:org.apache.geronimo.specs/geronimo-saaj_1.3_spec/1.1</bundle>
-        <bundle>mvn:org.apache.geronimo.specs/geronimo-jaxws_2.2_spec/1.2</bundle>
-
+        <!-- FitPal Application Bundles -->
         <bundle>mvn:com.fitpal/fitpal-api/1.0.0-SNAPSHOT</bundle>
         <bundle>mvn:com.fitpal/fitpal-service/1.0.0-SNAPSHOT</bundle>
+
+        <!-- JAX-WS API -->
+        <bundle>mvn:javax.xml.ws/jaxws-api/2.3.1</bundle>
+        <bundle>mvn:javax.jws/javax.jws-api/1.1</bundle>
+        <bundle>mvn:javax.xml.soap/javax.xml.soap-api/1.4.0</bundle>
     </feature>
+    
 </features>

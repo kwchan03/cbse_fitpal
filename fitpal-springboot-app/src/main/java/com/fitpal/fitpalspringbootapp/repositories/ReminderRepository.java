@@ -10,4 +10,7 @@ import java.util.List;
 public interface ReminderRepository extends MongoRepository<Reminder, String> {
     List<Reminder> findByUserIdAndTypeOrderByCreatedAtDesc(String userId, String type);
     List<Reminder> findByUserIdAndTypeOrderByDateAscTimeAsc(String userId, String type);
+
+    List<Reminder> findByUserIdAndTypeAndReadStatusOrderByCreatedAtDesc(String userId, String type, Boolean readStatus);
+    List<Reminder> findByDateAndTimeAndType(String date, String time, String type);
 }

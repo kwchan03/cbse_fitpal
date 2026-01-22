@@ -127,6 +127,31 @@ public class ReminderRepository {
         return list;
     }
 
+    public List<Reminder> findByUserIdAndTypeAndReadStatus(String userId, String type, Boolean readStatus) {
+        List<Reminder> list = new ArrayList<>();
+        getCollection()
+                .find(Filters.and(
+                        Filters.eq("userId", userId),
+                        Filters.eq("type", type),
+                        Filters.eq("readStatus", readStatus)
+                ))
+                .sort(Sorts.descending("createdAt"))
+                .forEach(doc -> list.add(mapDocumentToReminder(doc)));
+        return list;
+    }
+
+    public List<Reminder> findByDateAndTimeAndType(String date, String time, String type) {
+        List<Reminder> list = new ArrayList<>();
+        getCollection()
+                .find(Filters.and(
+                        Filters.eq("date", date),
+                        Filters.eq("time", time),
+                        Filters.eq("type", type)
+                ))
+                .forEach(doc -> list.add(mapDocumentToReminder(doc)));
+        return list;
+    }
+
     // ========== Mappers ==========
 
     private Document mapReminderToDocument(Reminder r) {

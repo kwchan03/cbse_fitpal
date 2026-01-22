@@ -1,7 +1,9 @@
 package com.fitpal.fitpalspringbootapp.services;
 
 import com.fitpal.fitpalspringbootapp.models.Steps;
+import com.fitpal.fitpalspringbootapp.models.User;
 import com.fitpal.fitpalspringbootapp.repositories.StepsRepository;
+import com.fitpal.fitpalspringbootapp.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,19 +19,47 @@ public class StepsService {
     @Autowired
     private StepsRepository stepsRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private DistanceService distanceService;
+
+    @Autowired
+    private StepsCaloriesService caloriesService;
+
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public Steps logSteps(String userId, String date, int steps) {
         if (steps <= 0) {
             throw new IllegalArgumentException("Steps must be positive");
         }
-        Steps stepLog = new Steps(userId, date, steps);
+        
+        // Get user to update totalDistance
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        // Calculate distance for this step count
+        double distance = distanceService.calculateDistanceForSteps(steps, userId);
+        
+        // Calculate calories based on the calculated distance
+        double calories = caloriesService.calculateCaloriesForDistance(distance, userId);
+        
+        // Accumulate distance to user's totalDistance
+        double currentTotal = user.getTotalDistance() != null ? user.getTotalDistance() : 0.0;
+        user.setTotalDistance(currentTotal + distance);
+        userRepository.save(user);
+        
+        Steps stepLog = new Steps(userId, date, steps, (double) distance, (double) calories);
         return stepsRepository.save(stepLog);
     }
 
     public int getDailySteps(String userId, String date) {
-        List<Steps> steps = stepsRepository.findByUserIdAndDateBetween(userId, date, date);
-        return steps.stream().mapToInt(Steps::getSteps).sum();
+        List<Steps> stepsList = stepsRepository.findByUserIdAndDate(userId, date);
+        
+        return stepsList.stream()
+                        .mapToInt(Steps::getSteps)
+                        .sum(); 
     }
 
     public int getWeeklySteps(String userId, String date) {

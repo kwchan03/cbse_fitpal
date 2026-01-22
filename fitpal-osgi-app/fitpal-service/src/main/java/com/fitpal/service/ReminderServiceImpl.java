@@ -1,7 +1,9 @@
 package com.fitpal.service;
 
+import com.fitpal.api.Preference;
 import com.fitpal.api.Reminder;
 import com.fitpal.api.ReminderService;
+import com.fitpal.service.db.PreferenceRepository;
 import com.fitpal.service.db.ReminderRepository;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -15,6 +17,9 @@ public class ReminderServiceImpl implements ReminderService {
 
     @Reference
     private ReminderRepository reminderRepository;
+
+    @Reference
+    private PreferenceRepository preferenceRepository;
 
     // --- 1. Create Reminder ---
     @Override
@@ -84,5 +89,33 @@ public class ReminderServiceImpl implements ReminderService {
         existing.setUpdatedAt(LocalDateTime.now());
 
         return reminderRepository.save(existing);
+    }
+
+    @Override
+    public List<Reminder> getRemindersByStatus(String userId, Boolean readStatus) {
+        if (userId == null) return Collections.emptyList();
+        return reminderRepository.findByUserIdAndTypeAndReadStatus(userId, "reminder", readStatus);
+    }
+
+    @Override
+    public Preference getPreferences(String userId) {
+        Preference pref = preferenceRepository.findByUserId(userId);
+        if (pref == null) {
+            pref = new Preference();
+            pref.setUserId(userId);
+            return preferenceRepository.save(pref);
+        }
+        return pref;
+    }
+
+    @Override
+    public Preference updatePreferences(String userId, Preference input) {
+        Preference existing = getPreferences(userId);
+
+        if (input.getPushEnabled() != null) existing.setPushEnabled(input.getPushEnabled());
+        if (input.getEmailEnabled() != null) existing.setEmailEnabled(input.getEmailEnabled());
+        if (input.getDoNotDisturb() != null) existing.setDoNotDisturb(input.getDoNotDisturb());
+
+        return preferenceRepository.save(existing);
     }
 }

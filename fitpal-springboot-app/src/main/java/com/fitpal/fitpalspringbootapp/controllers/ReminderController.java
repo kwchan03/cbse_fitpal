@@ -1,5 +1,6 @@
 package com.fitpal.fitpalspringbootapp.controllers;
 
+import com.fitpal.fitpalspringbootapp.dtos.PreferenceDto;
 import com.fitpal.fitpalspringbootapp.dtos.ReminderDto;
 import com.fitpal.fitpalspringbootapp.services.ReminderService;
 import jakarta.validation.Valid;
@@ -88,6 +89,33 @@ public class ReminderController {
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<?> filterReminders(
+            @RequestAttribute("userId") String userId,
+            @RequestParam Boolean read
+    ) {
+        return ResponseEntity.ok(reminderService.getRemindersByStatus(userId, read));
+    }
+
+    @GetMapping("/preferences")
+    public ResponseEntity<?> getPreferences(@RequestAttribute("userId") String userId) {
+        return ResponseEntity.ok(reminderService.getPreferences(userId));
+    }
+
+    @PutMapping("/preferences")
+    public ResponseEntity<?> updatePreferences(
+            @RequestAttribute("userId") String userId,
+            @RequestBody PreferenceDto dto
+    ) {
+        try {
+            PreferenceDto updated = reminderService.updatePreferences(userId, dto);
+            return ResponseEntity.ok(updated);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Failed to update preferences"));
         }
     }
 }
