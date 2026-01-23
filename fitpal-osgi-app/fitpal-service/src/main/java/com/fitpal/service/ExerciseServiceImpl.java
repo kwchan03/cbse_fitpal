@@ -1,6 +1,7 @@
 package com.fitpal.service;
 
 import com.fitpal.api.ExerciseService;
+import com.fitpal.api.StepsService;
 import com.fitpal.api.dtos.*;
 import com.fitpal.api.ExerciseLog;
 import com.fitpal.api.User;
@@ -31,6 +32,8 @@ public class ExerciseServiceImpl implements ExerciseService {
 
     @Reference
     private MongoService mongoService;
+    @Reference
+    private StepsService stepsService;
 
     // Helper methods
     private User requireUser(String userId) {
@@ -225,9 +228,11 @@ public class ExerciseServiceImpl implements ExerciseService {
         LocalDate start = today.with(DayOfWeek.MONDAY);
         LocalDate end = start.plusDays(6);
 
-        // Note: StepsService reference would be needed for totalSteps
-        // For now, we'll set it to 0
         int totalSteps = 0;
+        for (int i = 0; i < 7; i++) {
+            LocalDate d = start.plusDays(i);
+            totalSteps += stepsService.getDailySteps(userId, d.toString());
+        }
 
         List<ExerciseLog> logs = findLogsByDateRange(user, start, end);
 
